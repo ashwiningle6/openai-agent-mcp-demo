@@ -1,8 +1,9 @@
 import requests
+import os
 from fastmcp import FastMCP
 
 # Create server
-mcp = FastMCP("custom-mcp-server")
+mcp = FastMCP(name="custom-mcp-server")
 
 @mcp.tool()
 def Multiply(a: int, b: int) -> int:
@@ -21,4 +22,8 @@ def Get_Current_Weather(city: str) -> str:
     return response.text
 
 if __name__ == "__main__":
-    mcp.run(transport="sse")
+    mcp.run(
+        transport="streamable-http",
+        host=os.environ.get("MCP_HOST", "127.0.0.1"),
+        port=os.environ.get("MCP_PORT", 8000),
+    )
