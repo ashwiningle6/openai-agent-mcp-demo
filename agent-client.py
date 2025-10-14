@@ -3,6 +3,7 @@ from agents import Agent, Runner, gen_trace_id, trace, set_default_openai_key
 from agents.mcp import MCPServer, MCPServerSseParams, MCPServerSse
 from agents.model_settings import ModelSettings
 from dotenv import load_dotenv
+import os 
 
 # Load variables from .env file
 load_dotenv()
@@ -10,14 +11,15 @@ set_default_openai_key(os.environ.get("OPENAI_API_KEY", ""))
 
 async def runAgent(mcp_server: MCPServer):
     agent = Agent(
-        name="Assistant",
-        instructions="Use the tools to answer the questions.",
+        name="Tool based Assistant",
+        instructions="Use available tools to answer user queries.",
+        model="gpt-4o-mini",
         mcp_servers=[mcp_server],
-        model_settings=ModelSettings(tool_choice="required"),
+        model_settings=ModelSettings(temperature=0.95, top_p=0.95, tool_choice="required"),
     )
 
     # Use the `add` tool to add two numbers
-    num1, num2 = input("\nEnter 2 numbers (e.g., 12, 15): ").split()
+    num1, num2 = input("\nEnter 2 numbers (e.g., 12, 15): ").split(",")
     message = f"Multiply these numbers: {num1} and {num2}."
     print(f"Running: {message}")
     result = await Runner.run(starting_agent=agent, input=message)
