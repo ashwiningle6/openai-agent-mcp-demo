@@ -31,4 +31,5 @@ aiohttp
 fastmcp
 google-search-results
 serpapi
-telemetry
+telemetryz
+acp-mcp
